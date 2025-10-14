@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AgencyDashboard from '@/app/components/dashboard/agencyDashboard';
-import AdminDashboard from '@/app/components/dashboard/adminDashboard';
 import { User, Agency, AgencyUpdateData} from '@/app/components/types';
 
 // Dummy agencies data
@@ -67,14 +66,6 @@ const DashboardPage = () => {
     ));
   };
 
-  const handleToggleAgencyStatus = (agencyId: string, isActive: boolean) => {
-    setAgencies(prev => prev.map(agency =>
-      agency.id === agencyId
-        ? { ...agency, isActive }
-        : agency
-    ));
-  };
-
   const handleAgencyUpdate = (data: AgencyUpdateData) => {
     if (currentUser) {
       handleUpdateAgency(currentUser.id, data);
@@ -96,18 +87,10 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 p-4">
       <div className="container mx-auto py-8">
-        {currentUser.role === 'admin' ? (
-          <AdminDashboard
-            agencies={agencies}
-            onUpdateAgency={handleUpdateAgency}
-            onToggleAgencyStatus={handleToggleAgencyStatus}
-          />
-        ) : (
-          <AgencyDashboard
-            agency={agencies.find(a => a.id === currentUser.id) || initialAgencies[0]}
-            onUpdateAgency={handleAgencyUpdate}
-          />
-        )}
+        <AgencyDashboard
+          agency={agencies.find(a => a.id === currentUser.id) || initialAgencies[0]}
+          onUpdateAgency={handleAgencyUpdate}
+        />
       </div>
     </div>
   );

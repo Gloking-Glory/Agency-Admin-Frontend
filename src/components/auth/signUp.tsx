@@ -29,7 +29,7 @@ const SignUpForm = () => {
   const [modalMessage, setModalMessage] = useState({ title: 'Sign Up Successful', subtitle: 'Thank you for signing up' });
 
   // const { mutate, isPending, isError, error, isSuccess } = useSignUp();
-  const { mutate, isPending, error } = useSignUp();
+  const { mutate, isPending } = useSignUp();
 
   const handleFormSubmit = async (data: SignUpData) => {
     mutate(

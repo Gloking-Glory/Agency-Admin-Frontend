@@ -23,19 +23,28 @@ const LoginForm = () => {
   const [alertModal, setAlertModal] = useState(false);
   const [modalMessage, setModalMessage] = useState({ title: '', subtitle: '' });
 
-  const { mutate, isPending, error } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const handleFormSubmit = (data: LoginData) => {
     mutate(
       { ...data },
       {
         onSuccess: (data: LoginResponseType)=> {
-          // localStorage.setItem("access",  )
-          console.log(data);
+          const { user, tokens } = data;
+          const { role } = user;
+          const { refresh, access } = tokens;
+          localStorage.setItem("refresh", refresh);
+          localStorage.setItem("access", access);
           setAlertType("success");
           setAlertModal(true);
           setModalMessage({ title: 'Success', subtitle: 'Login Successful, going to dashboard...' })
-          setTimeout(() => router.push("/dashboard"), 1500)
+          setTimeout(() => {
+            if (role === 'ADMIN') {
+              router.push("/admin-dashboard")
+            } else {
+              router.push("/agency-dashboard")
+            }
+          }, 1500);
         },
 
         onError: (err: AxiosError<LoginErrorType>) => {
