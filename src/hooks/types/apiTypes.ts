@@ -1,3 +1,4 @@
+import AgencyDashboard from '../../components/dashboard/agencyDashboard';
 export interface SignUpResponseType {
   message: string;
   user: {
@@ -27,4 +28,8 @@ export interface LoginResponseType {
 
 export interface LoginErrorType {
   error?: string;
+}
+
+export interface AgencyDashboardErrType {
+  [key: string]: string[];
 }

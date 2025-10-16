@@ -4,15 +4,19 @@ export interface User {
   role: 'admin' | 'agency';
 }
 
-export interface Agency {
-  id: string;
-  email: string;
-  name: string;
-  address: string;
-  contactDetails?: string;
-  city: string;
-  country: string;
-  isActive: boolean;
+export interface AgencyDashboardRspData {
+  agency_summary: {
+    id: string;
+    email: string;
+    company_name: string;
+    address: string;
+    contact_details?: string;
+    is_active: boolean;
+  };
+}
+
+export interface AgencyDashboardRqstData {
+  id: string
 }
 
 export interface SignUpData {
@@ -36,4 +40,10 @@ export interface AgencyUpdateData {
   contactDetails?: string;
   city: string;
   country: string;
+}
+
+export interface AgencyUpdate {
+  company_name: string;
+  address: string;
+  contact_details: string;
 }

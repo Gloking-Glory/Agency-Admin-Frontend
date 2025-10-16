@@ -15,5 +15,5 @@ const signUpUser = (data: SignUpData) => apiRequest.post<SignUpResponseType>('/u
 export const useSignUp = () => {
     return useMutation<SignUpResponseType, AxiosError<SignUpErrorType>, SignUpData>({
         mutationFn: signUpUser, 
-    })
+    });
 }
