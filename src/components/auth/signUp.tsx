@@ -12,6 +12,7 @@ import { useSignUp } from "@/app/hooks/useSignUp";
 import AlertModal, { AlertType } from "../utils/alertModal";
 import { SignUpErrorType } from "@/app/hooks/types/apiTypes";
 import type { AxiosError } from 'axios';
+import Link from "next/link";
 
 const SignUpForm = () => {
   const {
@@ -236,7 +237,7 @@ const SignUpForm = () => {
             className={`w-full py-2 px-4 rounded-lg text-white transition duration-200 ${
               isPending
                 ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                : "bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
             }`}
           >
             {isPending ? (
@@ -248,7 +249,15 @@ const SignUpForm = () => {
               "Sign Up"
             )}
           </button>
+
         </form>
+        <p className="mt-4 text-center text-gray-600 text-sm sm:text-base">
+          Already have an account?
+          &nbsp;
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Log In
+          </Link>
+        </p>
       </div>
 
       <AlertModal

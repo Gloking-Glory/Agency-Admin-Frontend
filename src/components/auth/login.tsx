@@ -10,6 +10,7 @@ import { LoginErrorType, LoginResponseType } from "@/app/hooks/types/apiTypes";
 import type { AxiosError } from "axios";
 import { useLogin } from "@/app/hooks/useLogin";
 import { CircularProgress } from "@mui/material";
+import Link from "next/link";
 
 const LoginForm = () => {
   const {
@@ -125,7 +126,7 @@ const LoginForm = () => {
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg 
                        hover:bg-blue-600 focus:outline-none 
                        focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-                       transition duration-200 font-medium"
+                       transition duration-200 font-medium cursor-pointer"
           >
             {isPending ? (
               <>
@@ -138,6 +139,14 @@ const LoginForm = () => {
             )}
           </button>
         </form>
+
+        <p className="mt-4 text-center text-gray-600 text-sm sm:text-base">
+          Don&apos;t have an account?
+          &nbsp;
+          <Link href="/" className="text-blue-600 hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </div>
 
       <AlertModal

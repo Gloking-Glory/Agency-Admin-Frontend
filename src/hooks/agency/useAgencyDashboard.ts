@@ -1,17 +1,22 @@
-import { useQuery } from '@tanstack/react-query';
-import { AgencyDashboardRspData } from '../../components/types';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { AgencyDashboardData, AgencyUpdateData } from '../../components/types';
 import type { AxiosError } from 'axios';
 import { apiRequest } from '../../components/utils/apiRequest';
-import { AgencyDashboardErrType } from '..//types/apiTypes';
+import { AgencyDashboardErrType, SignUpErrorType, SignUpResponseType } from '..//types/apiTypes';
 
-const fetchAgencyDashboard = () => apiRequest.get<AgencyDashboardRspData>('/agency/agency-dashboard');
+const fetchAgencyDashboard = () => apiRequest.get<AgencyDashboardData>('/agency/agency-dashboard');
 
-const updateAgency = ( data ) => apiRequest.patch('/agency/profile/, data);
+const agencyUpdate = (data: AgencyUpdateData) => apiRequest.patch<SignUpResponseType>('/agency/agency-profile/', data);
 
 export const useAgencyDashboard = () => {
-    return useQuery<AgencyDashboardRspData, AxiosError<AgencyDashboardErrType>>({
+    return useQuery<AgencyDashboardData, AxiosError<AgencyDashboardErrType>>({
         queryKey: ['agencyDashboard'],
         queryFn: fetchAgencyDashboard,
     });
 }
 
+export const useAgencyUpdate = () => {
+    return useMutation<SignUpResponseType, AxiosError<SignUpErrorType>, AgencyUpdateData>({
+        mutationFn: agencyUpdate
+    })
+}

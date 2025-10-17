@@ -1,16 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useAgencyDashboard } from '@/app/hooks/agency/useAgencyDashboard';
-import { AgencyDashboardRspData, AgencyUpdateData } from '../types';
+import React, { useState } from 'react';
+import { useAgencyDashboard, useAgencyUpdate } from '@/app/hooks/agency/useAgencyDashboard';
+import { AgencyUpdateData } from '../types';
 import AgencyModal from '../utils/agencyModal';
 import LoadingScreen from '../utils/loadingScreen';
+import AlertModal, { AlertType } from '../utils/alertModal';
 
 const AgencyDashboard = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data, isPending: pending, error, refetch } = useAgencyDashboard();
+  const [editModal, setEditModal] = useState(false);
+  const [alertModal, setAlertModal] = useState(false);
+  const [alertType, setAlertType] = useState<AlertType>('success');
+  const [modalMessage, setModalMessage] = useState({ title: 'Profile Updated!', subtitle: 'User profile updated successfully!!' });
+  const { data, isPending, error, refetch } = useAgencyDashboard();
+  const { mutate, isPending: updatePending } = useAgencyUpdate();
+
   // another way to destructure in typescript
-  // const agency = (data?.agency_summary || {} as AgencyDashboardRspData['agency_summary']);
+  // const agency = (data?.agency_summary || {} as AgencyDashboardData['agency_summary']);
   // const agency = (data?.agency_summary || {} as {
   //   company_name: string;
   //   email: string;
@@ -18,25 +24,39 @@ const AgencyDashboard = () => {
   //   address: string;
   //   is_active: boolean;
   // });
-  const isPending = true;
-  const agency = data?.agency_summary;
+
+  const agency = data?.agency_summary ?? null;
 
   const company_name = agency?.company_name ?? '';
   const email = agency?.email ?? '';
   const contact_details = agency?.contact_details ?? '';
   const address = agency?.address ?? '';
   const is_active = agency?.is_active ?? false;
+  // const role = agency?.role ?? '';
     
 
-  // const handleUpdate = (data: AgencyUpdateData) => {
-  //   onUpdateAgency(data);
-  // };
-
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-    }
-  }, [data]);
+  const handleUpdate = (data: AgencyUpdateData) => {
+    console.log(data);
+    mutate(
+      { ...data },
+      {
+        onSuccess: (data) => {
+          refetch();
+          setEditModal(false);
+          setAlertType('success');
+          setAlertModal(true);
+          setModalMessage({ title: 'Profile Updated!', subtitle: 'User profile updated successfully!!' });
+          console.log(data);
+        },
+        onError: (err) => {
+          setAlertType('error');
+          setAlertModal(true);
+          setModalMessage({ title: 'Profile Update Failed!', subtitle: 'Something went wrong!' });
+          console.log(err);
+        }
+      }
+    )
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -48,8 +68,8 @@ const AgencyDashboard = () => {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">Agency Dashboard</h1>
             <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
+              onClick={() => setEditModal(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200 cursor-pointer"
             >
               Edit Profile
             </button>
@@ -95,10 +115,20 @@ const AgencyDashboard = () => {
       )}
 
       <AgencyModal
-        isOpen={isModalOpen}
         agency={agency}
-        onClose={() => setIsModalOpen(false)}
+        // agency={agency as AgencyData}
+        isOpen={editModal}
+        onClose={() => setEditModal(false)}
         onUpdate={handleUpdate}
+        loading={updatePending}
+      />
+
+      <AlertModal
+        isOpen={alertModal}
+        title={modalMessage.title}
+        subtitle={modalMessage.subtitle}
+        type={alertType}
+        onClose={() => setAlertModal(false)}
       />
     </div>
   );
