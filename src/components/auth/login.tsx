@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { LoginData } from "../types";
 import { validateEmail, validatePassword } from "../utils/validation";
 import AlertModal, { AlertType } from "../utils/alertModal";
-import { LoginErrorType, LoginResponseType } from "@/app/hooks/types/apiTypes";
+import { GenErrType, LoginResponseType } from "@/app/hooks/types/apiTypes";
 import type { AxiosError } from "axios";
 import { useLogin } from "@/app/hooks/useLogin";
 import { CircularProgress } from "@mui/material";
@@ -48,14 +48,10 @@ const LoginForm = () => {
           }, 1500);
         },
 
-        onError: (err: AxiosError<LoginErrorType>) => {
+        onError: (err: AxiosError<GenErrType>) => {
           const res = err.response?.data;
-          const message =
-            res?.error ||
-            (typeof res === 'object'
-              ? Object.values(res)[0]?.[0] : 'Login Failed Something went wrong!');
           setAlertType("error");
-          setModalMessage({ title: 'Error', subtitle: message })
+          setModalMessage({ title: 'Error', subtitle: 'Login Failed' })
           setAlertModal(true);
         }
       }

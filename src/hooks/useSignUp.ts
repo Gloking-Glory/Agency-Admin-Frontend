@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { SignUpData } from '../components/types';
-import { SignUpResponseType, SignUpErrorType } from './types/apiTypes';
+import { SignUpResponseType, GenErrType } from './types/apiTypes';
 import type { AxiosError } from 'axios';
 import { apiRequest } from '../components/utils/apiRequest';
 
@@ -13,7 +13,7 @@ import { apiRequest } from '../components/utils/apiRequest';
 const signUpUser = (data: SignUpData) => apiRequest.post<SignUpResponseType>('/users/create-user/', data);
 
 export const useSignUp = () => {
-    return useMutation<SignUpResponseType, AxiosError<SignUpErrorType>, SignUpData>({
+    return useMutation<SignUpResponseType, AxiosError<GenErrType>, SignUpData>({
         mutationFn: signUpUser, 
     });
 }

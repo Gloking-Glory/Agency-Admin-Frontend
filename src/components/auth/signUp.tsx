@@ -10,7 +10,7 @@ import {
 } from "../utils/validation";
 import { useSignUp } from "@/app/hooks/useSignUp";
 import AlertModal, { AlertType } from "../utils/alertModal";
-import { SignUpErrorType } from "@/app/hooks/types/apiTypes";
+import { GenErrType } from "@/app/hooks/types/apiTypes";
 import type { AxiosError } from 'axios';
 import Link from "next/link";
 
@@ -43,7 +43,7 @@ const SignUpForm = () => {
           setAlertModal(true);
           setTimeout(() => router.push("/login"), 2500);
         },
-        onError: (err: AxiosError<SignUpErrorType>) => {
+        onError: (err: AxiosError<GenErrType>) => {
           const res = err.response?.data;
           const firstError =
             typeof res === 'object'

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useAgencyDashboard, useAgencyUpdate } from '@/app/hooks/agency/useAgencyDashboard';
+import { useAgencyDashboard, useAgencyUpdate } from '@/app/hooks/agency/useAgency';
 import { AgencyUpdateData } from '../types';
 import AgencyModal from '../utils/agencyModal';
 import LoadingScreen from '../utils/loadingScreen';

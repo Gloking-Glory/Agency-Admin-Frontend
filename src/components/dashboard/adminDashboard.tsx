@@ -1,127 +1,141 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Agency, AgencyUpdateData } from '../types';
-import AgencyModal from '../utils/agencyModal';
+import React, { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react"; // ✅ icons
+import { AdminUserList, AdminDelData } from "../types";
+import AgencyModal from "../utils/agencyModal";
+import { useAdminDashboard, useAdminDelUser } from "@/app/hooks/admin/useAdmin";
 
-interface AdminDashboardProps {
-  agencies: Agency[];
-  onUpdateAgency: (agencyId: string, data: AgencyUpdateData) => void;
-  onToggleAgencyStatus: (agencyId: string, isActive: boolean) => void;
-}
-
-const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  agencies,
-  onUpdateAgency,
-  onToggleAgencyStatus
-}) => {
-  const [selectedAgency, setSelectedAgency] = useState<Agency | null>(null);
+const AdminDashboard = () => {
+  const [selectedAgency, setSelectedAgency] = useState<AdminUserList | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const editFields = ["Role", "Company", "Email", "Contact Details", "Status", "Actions"];
+  const { data, isPending } = useAdminDashboard();
 
-  const handleEdit = (agency: Agency) => {
-    setSelectedAgency(agency);
-    setIsModalOpen(true);
-  };
+  const allUsers: AdminUserList[] = data?.results || [];
+  const { mutate, isPending: delPending, error } = useAdminDelUser();
 
-  const handleUpdate = (data: AgencyUpdateData) => {
-    if (selectedAgency) {
-      onUpdateAgency(selectedAgency.id, data);
-    }
-  };
+  // const users: PaginatedRspData[] = data || [];
 
-  const handleToggleStatus = (agency: Agency) => {
-    onToggleAgencyStatus(agency.id, !agency.isActive);
-  };
+  // const handleEdit = (agency: AgencyData) => {
+  //   setSelectedAgency(agency);
+  //   setIsModalOpen(true);
+  // };
 
+  const handleDelete = (agency: AdminDelData) => {
+    console.log(agency);
+    mutate(
+      { ...agency },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+        },
+        onError: (err) => {
+          console.log(err);
+        }
+      }
+    )
+  };  
+
+  // const handleUpdate = (data: AgencyUpdateData) => {
+  //   if (selectedAgency) {
+  //     console.log("Updating agency:", selectedAgency.id, data);
+  //   }
+  // };
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
-        
-        <div className="overflow-x-auto">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-white rounded-2xl shadow-md p-6 md:p-8">
+        <h1 className="text-2xl font-semibold text-gray-800 mb-6">
+          Admin Dashboard
+        </h1>
+
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Company
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  City
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Country
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                {editFields.map(
+                  (header) => (
+                    <th
+                      key={header}
+                      className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                    >
+                      {header}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {agencies.map((agency) => (
-                <tr key={agency.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{agency.name}</div>
+
+            <tbody className="bg-white divide-y divide-gray-100">
+              {allUsers.map((user) => (
+                <tr
+                  key={user.id}
+                  className="hover:bg-gray-50 transition duration-150"
+                >
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                    {user.role}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{agency.email}</div>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                    {user.company_name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{agency.city}</div>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {user.email}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{agency.country}</div>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {user.contact_details}
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      agency.isActive 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {agency.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => handleEdit(agency)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleToggleStatus(agency)}
-                      className={`${
-                        agency.isActive 
-                          ? 'text-red-600 hover:text-red-900' 
-                          : 'text-green-600 hover:text-green-900'
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        user.is_active
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
                       }`}
                     >
-                      {agency.isActive ? 'Deactivate' : 'Activate'}
+                      {user.is_active ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm flex gap-3">
+                    <button
+                      // onClick={() => handleEdit(user)}
+                      className="text-blue-600 hover:text-blue-800 transition"
+                      title="Edit Agency"
+                    >
+                      <Pencil size={18} />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete({ id: user.id })}
+                      className="text-red-600 hover:text-red-800 transition"
+                      title="Delete Agency" 
+                    >
+                      <Trash2 size={18} />
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
 
-        {agencies.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            No agencies registered yet.
-          </div>
-        )}
+          {allUsers.length === 0 && (
+            <div className="text-center py-10 text-gray-500 text-sm">
+              No user registered yet.
+            </div>
+          )}
+        </div>
       </div>
 
       <AgencyModal
         isOpen={isModalOpen}
         agency={selectedAgency}
         onClose={() => setIsModalOpen(false)}
-        onUpdate={handleUpdate}
+        // onUpdate={handleUpdate}
+        onUpdate={() => console.log('scope')}
+        loading={false}
       />
     </div>
   );
