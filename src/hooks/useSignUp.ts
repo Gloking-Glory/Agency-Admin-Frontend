@@ -17,3 +17,19 @@ export const useSignUp = () => {
         mutationFn: signUpUser, 
     });
 }
+
+
+// one way to destructure an update with its types
+// const updateCourse = (id: CourseIdData, data: AddCourseData) => apiRequest.patch<AddCourseRspType>(`/courses/${id.id}/update/`, data);
+// export const useUpdateCourse = () => {
+//     return useMutation<AddCourseRspType, AxiosError<GenErrType>, { id: CourseIdData, data: AddCourseData }>({
+//         mutationFn: ({ id, data }) => updateCourse(id, data),
+//     });
+// };
+// other way
+// const updateCourse = ({ id, ..data }: AddCourseData & CourseIdData) => apiRequest.patch<AddCourseRspType>(`/courses/${id.id}/update/`, data);
+// export const useUpdateCourse = () => {
+//     return useMutation<AddCourseRspType, AxiosError<GenErrType>, AddCourseData & CourseIdData>({
+//         mutationFn: updateCourse,
+//     });
+// };

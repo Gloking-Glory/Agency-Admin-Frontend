@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: process.env.API_URL || "http://localhost:8000/api",
+    baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api` || "http://localhost:8000/api",
     // withCredentials: true, ----- allows frontend to send cookies to the backend with all requests
     headers: {
         "Accept": "application/json",
