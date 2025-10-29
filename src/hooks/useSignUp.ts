@@ -16,7 +16,7 @@ export const useSignUp = () => {
     return useMutation<SignUpResponseType, AxiosError<GenErrType>, SignUpData>({
         mutationFn: signUpUser, 
     });
-}
+};
 
 
 // one way to destructure an update with its types
